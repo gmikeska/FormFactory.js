@@ -4,11 +4,17 @@ function makeForm(fields, options)
     options || (options = {})
     options.nickName || (options.nickName = '')
     options.context || (options.context = $('<table>'))
+    options.fieldWrapper || (options.fieldWrapper = '<tr>')
+    options.labelWrapper || (options.labelWrapper = "<td>")
+    options.inputWrapper || (options.inputWrapper = "<td>")
     options.formElement || (options.formElement = $('<form>'))
     $formElement = options.formElement
     $formElement.options = options
     $formElement.nickName = options.nickName
     $formElement.context = options.context
+    $formElement.fieldWrapper = options.fieldWrapper
+    $formElement.labelWrapper = options.labelWrapper
+    $formElement.inputWrapper = options.inputWrapper
     $formElement.append($formElement.context)
     $formElement.labels = []
     $formElement.labelCells = []
@@ -29,9 +35,9 @@ function makeForm(fields, options)
 
         if(field.type != "select" && field.type != "button")
         {
-              $rowElement = $('<tr>')
-              $labeltd = $('<td>')
-              $inputtd = $('<td>')
+              $rowElement = $(this.fieldWrapper)
+              $labeltd = $(this.labelWrapper)
+              $inputtd = $(this.inputWrapper)
               if(type != "hidden")
               {
 
@@ -79,10 +85,9 @@ function makeForm(fields, options)
     }
     $formElement.addButton = function(name, id)
     {
-        $rowElement = $('<tr>')
-        $labeltd = $('<td>')
-          
-          $inputtd = $('<td>')
+          $rowElement = $(this.fieldWrapper)
+          $labeltd = $(this.labelWrapper)
+          $inputtd = $(this.inputWrapper)
           if(this.nickName != '')
             $input = $('<button>').attr("id", this.nickName+"-"+id)
           else
@@ -97,26 +102,19 @@ function makeForm(fields, options)
         return $formElement
 
     }
-    $formElement.clearAll = function()
-    {
-        $.each(this.inputs, function(k,v){
-          v.val('')
-        })
-    }
     $formElement.addSelect = function(name, opts, id)
     {
         var $select
-        $rowElement = $('<tr>')
-
-
-          $labeltd = $('<td>')
+         $rowElement = $(this.fieldWrapper)
+          $labeltd = $(this.labelWrapper)
+          
           
           $label = $('<label>').text(name.charAt(0).toUpperCase() + name.slice(1)+":")
           $labeltd.append($label)
           this.labelCells.push($labeltd)
           this.labels.push($label)
 
-          $inputtd = $('<td>')
+          $inputtd = $(this.inputWrapper)
           if(this.nickName != '')
             $select = $('<select>').attr("id", this.nickName+"-"+id)
           else
@@ -206,6 +204,12 @@ function makeForm(fields, options)
 
         })
         return data
+    }
+    $formElement.clearAll = function()
+    {
+        $.each(this.inputs, function(k,v){
+          v.val('')
+        })
     }
       //console.table(fields)
     fields.forEach(function(v){

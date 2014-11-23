@@ -1,5 +1,6 @@
 function makeForm(fields, options)
 {   
+    //console.table(fields)
     options || (options = {})
     options.nickName || (options.nickName = '')
     options.context || (options.context = $('<table>'))
@@ -13,7 +14,7 @@ function makeForm(fields, options)
     $formElement.labelCells = []
     $formElement.inputs = []
     $formElement.inputCells = []
-    console.log($formElement)
+    //console.log($formElement)
     $formElement.addInput = function(field)
     {
         field.id || (field.id = field.name)
@@ -21,48 +22,63 @@ function makeForm(fields, options)
         id = field.id
         field.val || (field.val == "")
         val = field.val
-        console.log(field.type)
+        //console.log(field.type)
         field.type || (field.type == "input")
         type = field.type
-        console.log('creating '+name)
+        //console.log('creating '+name)
 
-        $rowElement = $('<tr>')
-            $labeltd = $('<td>')
-            $inputtd = $('<td>')
-        if(type != "hidden")
+        if(field.type != "select" && field.type != "button")
         {
+              $rowElement = $('<tr>')
+              $labeltd = $('<td>')
+              $inputtd = $('<td>')
+              if(type != "hidden")
+              {
+
+          
+
+                  $label = $('<label>').text(name.charAt(0).toUpperCase() + name.slice(1)+":")
+                  $labeltd.append($label)
+                  this.labelCells.push($labeltd)
+                  this.labels.push($label)
+              }
+              else
+              {
+                  $labeltd.append($("<br>"))
+                  $inputtd.append($("<br>"))
+
+              }
+              $rowElement.append($labeltd)
+
+              if(this.nickName != '')
+                  $input = $('<input>').attr("type", type).attr("id", this.nickName+"-"+id)
+              else
+                  $input = $('<input>').attr("type", type).attr("id", id)
+                  $input.val(val)
+              
+              $inputtd.append($input)
+              this.inputCells.push($inputtd)
+              this.inputs.push($input)
+              $rowElement.append($inputtd)
+              this.context.append($rowElement)
+
+              return $formElement
+
+        }
+        else if (field.type == "select")
+        {
+            //console.log("Calling addSelect:"+field.options.class)
+            $formElement.addSelect(field.name, field.options, field.id)
+        }
+        else if (field.type == "button")
+        {
+            $formElement.addButton(field.name, field.id)
+        }
 
         
-
-            $label = $('<label>').text(name.charAt(0).toUpperCase() + name.slice(1)+":")
-            $labeltd.append($label)
-            this.labelCells.push($labeltd)
-            this.labels.push($label)
-        }
-        else
-        {
-            $labeltd.append($("<br>"))
-            $inputtd.append($("<br>"))
-
-        }
-            $rowElement.append($labeltd)
-          if(this.nickName != '')
-            $input = $('<input>').attr("type", type).attr("id", this.nickName+"-"+id)
-          else
-            $input = $('<input>').attr("type", type).attr("id", id)
-            $input.val(val)
-          $inputtd.append($input)
-          this.inputCells.push($inputtd)
-          this.inputs.push($input)
-          $rowElement.append($inputtd)
-        this.context.append($rowElement)
-
-        return $formElement
     }
     $formElement.addButton = function(name, id)
     {
-      console.log('creating '+name)
-
         $rowElement = $('<tr>')
         $labeltd = $('<td>')
           
@@ -89,7 +105,6 @@ function makeForm(fields, options)
     }
     $formElement.addSelect = function(name, opts, id)
     {
-
         var $select
         $rowElement = $('<tr>')
 
@@ -122,17 +137,17 @@ function makeForm(fields, options)
             
             
             x = parseInt(opts)
-            console.log("param:"+x)
+            //console.log("param:"+x)
             params.push(x);
             n = x.toString().charAt(x.toString().length-1)
             opts = opts.substr(n, opts.length-1)
-            console.log(opts)
+            //console.log(opts)
             x = opts.substr(opts.lastIndexOf('.')+1, opts.length)
             x = parseInt(x)
-            console.log("param2:"+x)
+            //console.log("param2:"+x)
             params.push(x);
             opts = opts.substr(opts.indexOf("."), opts.lastIndexOf(".")+1)
-            console.log(opts)
+            //console.log(opts)
             if(params[0] < params[1])
               direction = 1
             if(params[0] > params[1])
@@ -161,14 +176,10 @@ function makeForm(fields, options)
               }
             }
 
-
-
-
-
-
        
         return $formElement
-  }
+    }
+    $
     $formElement.getByName = function(name)
     {
             var f
@@ -196,26 +207,12 @@ function makeForm(fields, options)
         })
         return data
     }
-    console.log(fields)
+      //console.table(fields)
     fields.forEach(function(v){
             
-            if(v.type != "select" && v.type != "button")
-            {
-                console.log("Calling addInput")
-                $formElement.addInput(v)
+        $formElement.addInput(v)
 
-            }
-            else if (v.type == "select")
-            {
-                console.log("Calling addSelect:"+v.options.class)
-                $formElement.addSelect(v.name, v.options, v.id)
-            }
-            else if (v.type == "button")
-            {
-                $formElement.addButton(v.name, v.id)
-            }
-        })
-
+    })
 
     return $formElement
 }

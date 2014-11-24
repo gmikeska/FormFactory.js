@@ -5,8 +5,6 @@ FormFactory.forms = {}
 
 FormFactory.makeForm = function(fields, options)
 {   
-
-/* Factory method that creates a jQuery '<form>' object (or accepts one as an optional argument) and adds helper methods to it. */
     this.formCount++
     //console.table(fields)
     options || (options = {})
